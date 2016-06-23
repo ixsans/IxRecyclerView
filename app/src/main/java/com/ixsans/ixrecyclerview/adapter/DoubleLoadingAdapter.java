@@ -13,7 +13,12 @@ import com.ixsans.ixrecyclerviewlib.IxRecyclerViewAdapter;
 
 import java.util.List;
 
+import static com.ixsans.ixrecyclerviewlib.IxDoubleLoadingAdapter.RecyclerListener;
 
+
+/**
+ * @author ixsan
+ */
 public class DoubleLoadingAdapter extends IxRecyclerViewAdapter<String> {
 
     private boolean mIsLoadingMore;
@@ -21,8 +26,7 @@ public class DoubleLoadingAdapter extends IxRecyclerViewAdapter<String> {
     private RecyclerListener mListener;
 
     public DoubleLoadingAdapter(List<String> data, RecyclerListener listener) {
-        // With Header & With Footer
-        super(data, true, true);
+        super(data, true, true);  // with header and footer
         this.mListener = listener;
     }
 
@@ -31,20 +35,19 @@ public class DoubleLoadingAdapter extends IxRecyclerViewAdapter<String> {
         if (holder instanceof ItemViewHolder) {
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             String data = getItem(position);
-            itemViewHolder.text.setText(data);
+            itemViewHolder.txtTitle.setText(data);
         } else if (holder instanceof HeaderViewHolder) {
-            ((HeaderViewHolder)holder).pbLoadMore.setVisibility(mIsLoadingPrevious? View.VISIBLE : View.GONE);
-            ((HeaderViewHolder)holder).btnLoadMore.setVisibility(mIsLoadingPrevious? View.GONE : View.VISIBLE);
+            ((HeaderViewHolder)holder).pbLoadPrevious.setVisibility(mIsLoadingPrevious ? View.VISIBLE : View.GONE);
+            ((HeaderViewHolder)holder).btnLoadPrevious.setVisibility(mIsLoadingPrevious ? View.GONE : View.VISIBLE);
         } else if (holder instanceof FooterViewHolder) {
-            ((FooterViewHolder)holder).pbLoadMore.setVisibility(mIsLoadingMore? View.VISIBLE : View.GONE);
-            ((FooterViewHolder)holder).btnLoadMore.setVisibility(mIsLoadingMore? View.GONE : View.VISIBLE);
+            ((FooterViewHolder)holder).pbLoadMore.setVisibility(mIsLoadingMore ? View.VISIBLE : View.GONE);
+            ((FooterViewHolder)holder).btnLoadMore.setVisibility(mIsLoadingMore ? View.GONE : View.VISIBLE);
         }
     }
 
-    //region Override Get ViewHolder
     @Override
     protected RecyclerView.ViewHolder getItemView(LayoutInflater inflater, ViewGroup parent) {
-        return new ItemViewHolder(inflater.inflate(R.layout.item_example, parent, false));
+        return new ItemViewHolder(inflater.inflate(R.layout.row_item, parent, false));
     }
 
     @Override
@@ -56,27 +59,25 @@ public class DoubleLoadingAdapter extends IxRecyclerViewAdapter<String> {
     protected RecyclerView.ViewHolder getFooterView(LayoutInflater inflater, ViewGroup parent) {
         return new FooterViewHolder(inflater.inflate(R.layout.load_more_footer, parent, false));
     }
-    //endregion
 
 
-    //region ViewHolder Header and Footer
     class ItemViewHolder extends RecyclerView.ViewHolder {
-        TextView text;
+        TextView txtTitle;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            text = (TextView)itemView.findViewById(R.id.text);
+            txtTitle = (TextView)itemView.findViewById(R.id.title);
         }
     }
 
     class HeaderViewHolder extends RecyclerView.ViewHolder {
-        ProgressBar pbLoadMore;
-        Button btnLoadMore;
+        ProgressBar pbLoadPrevious;
+        Button btnLoadPrevious;
         
         public HeaderViewHolder(View itemView) {
             super(itemView);
-            btnLoadMore = (Button) itemView.findViewById(R.id.btn_loadMore);
-            btnLoadMore.setOnClickListener(new View.OnClickListener() {
+            btnLoadPrevious = (Button) itemView.findViewById(R.id.btn_loadprevious);
+            btnLoadPrevious.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     setIsOnLoadingPrevious(true);
@@ -92,7 +93,7 @@ public class DoubleLoadingAdapter extends IxRecyclerViewAdapter<String> {
                     mListener.onLoadPrevious();
                 }
             });
-            pbLoadMore = (ProgressBar) itemView.findViewById(R.id.pb_loadMore);
+            pbLoadPrevious = (ProgressBar) itemView.findViewById(R.id.pb_loadprevious);
         }
     }
 
@@ -102,7 +103,7 @@ public class DoubleLoadingAdapter extends IxRecyclerViewAdapter<String> {
 
         public FooterViewHolder(View itemView) {
             super(itemView);
-            btnLoadMore = (Button) itemView.findViewById(R.id.btn_loadMore);
+            btnLoadMore = (Button) itemView.findViewById(R.id.btn_loadnext);
             btnLoadMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -119,11 +120,10 @@ public class DoubleLoadingAdapter extends IxRecyclerViewAdapter<String> {
                     mListener.onLoadMore();
                 }
             });
-            pbLoadMore = (ProgressBar) itemView.findViewById(R.id.pb_loadMore);
+            pbLoadMore = (ProgressBar) itemView.findViewById(R.id.pb_loadnext);
 
         }
     }
-    //endregion
 
     public void setIsOnLoadingPrevious(boolean onLoading){
         mIsLoadingPrevious = onLoading;

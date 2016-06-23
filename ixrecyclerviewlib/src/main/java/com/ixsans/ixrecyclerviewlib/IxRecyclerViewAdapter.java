@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import java.util.List;
 
 
+/**
+ * @author ixsan
+ */
 public abstract class IxRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HEADER = 0;
@@ -32,14 +35,6 @@ public abstract class IxRecyclerViewAdapter<T> extends RecyclerView.Adapter<Recy
         mWithFooter = withFooter;
     }
 
-    //region Get View
-    protected abstract RecyclerView.ViewHolder getItemView(LayoutInflater inflater, ViewGroup parent);
-
-    protected abstract RecyclerView.ViewHolder getHeaderView(LayoutInflater inflater, ViewGroup parent);
-
-    protected abstract RecyclerView.ViewHolder getFooterView(LayoutInflater inflater, ViewGroup parent);
-    //endregion
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -50,14 +45,20 @@ public abstract class IxRecyclerViewAdapter<T> extends RecyclerView.Adapter<Recy
         } else if (viewType == TYPE_FOOTER) {
             return getFooterView(inflater, parent);
         }else {
-            throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
+            throw new RuntimeException("No type that matches the type " + viewType);
         }
     }
+
+    protected abstract RecyclerView.ViewHolder getItemView(LayoutInflater inflater, ViewGroup parent);
+
+    protected abstract RecyclerView.ViewHolder getHeaderView(LayoutInflater inflater, ViewGroup parent);
+
+    protected abstract RecyclerView.ViewHolder getFooterView(LayoutInflater inflater, ViewGroup parent);
+
 
     @Override
     public int getItemCount() {
         int itemCount = data.size();
-
         if (mWithHeader)
             itemCount++;
         if (mWithFooter)
@@ -86,20 +87,25 @@ public abstract class IxRecyclerViewAdapter<T> extends RecyclerView.Adapter<Recy
         return mWithHeader ? data.get(position - 1) : data.get(position);
     }
 
+    /**
+     * Add or remove RecyclerView footer
+     * @param show true if show footer
+     */
     public void showFooter(boolean show){
         mWithFooter = show;
         notifyItemRemoved(getItemCount());
     }
 
+    /**
+     * Add or remove RecyclerView header
+     * @param show true if show header
+     */
     public void showHeader(boolean show){
-        mWithFooter = show;
-        notifyItemRemoved(getItemCount());
+        mWithHeader = show;
+        if(!show) notifyItemRemoved(0);
     }
 
-    public interface RecyclerListener {
-        void onLoadPrevious();
-        void onLoadMore();
-    }
+
 
 
 

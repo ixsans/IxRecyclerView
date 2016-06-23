@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ixsans.ixrecyclerview.adapter.EndlessLoadingAdapter;
+import com.ixsans.ixrecyclerviewlib.IxEndlessLoadingAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,9 @@ public class EndlessLoadingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_double_loading);
+        setContentView(R.layout.activity_list);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -34,9 +35,7 @@ public class EndlessLoadingActivity extends AppCompatActivity {
             list.add("List Item " + i);
         }
 
-        adapter = new EndlessLoadingAdapter(recyclerView, list, new EndlessLoadingAdapter.RecyclerListener() {
-            @Override
-            public void onLoadPrevious() {}
+        adapter = new EndlessLoadingAdapter(recyclerView, list, new IxEndlessLoadingAdapter.RecyclerListener(){
 
             @Override
             public void onLoadMore() {

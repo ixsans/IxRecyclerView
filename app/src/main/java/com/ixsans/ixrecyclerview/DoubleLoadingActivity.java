@@ -9,12 +9,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ixsans.ixrecyclerview.adapter.DoubleLoadingAdapter;
-import com.ixsans.ixrecyclerviewlib.IxRecyclerViewAdapter;
+import com.ixsans.ixrecyclerviewlib.IxDoubleLoadingAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DoubleLoadingActivity extends AppCompatActivity {
+
     List<String> list;
     DoubleLoadingAdapter adapter;
     LinearLayoutManager linearLayoutManager;
@@ -23,10 +24,9 @@ public class DoubleLoadingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_double_loading);
+        setContentView(R.layout.activity_list);
 
-        // Init RecyclerView
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         linearLayoutManager =new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         list = new ArrayList<>();
@@ -34,7 +34,7 @@ public class DoubleLoadingActivity extends AppCompatActivity {
             list.add("List Item " + i);
         }
 
-        adapter = new DoubleLoadingAdapter(list, new IxRecyclerViewAdapter.RecyclerListener() {
+        adapter = new DoubleLoadingAdapter(list, new IxDoubleLoadingAdapter.RecyclerListener(){
             @Override
             public void onLoadPrevious() {
                 Handler handler = new Handler();
@@ -49,11 +49,12 @@ public class DoubleLoadingActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 adapter.notifyDataSetChanged();
-                                linearLayoutManager.scrollToPositionWithOffset(newDataCount+1, 0);
+                                //focus to last first index, with additional offset 10px
+                                linearLayoutManager.scrollToPositionWithOffset(newDataCount + 1, 10);
                             }
                         });
                     }
-                }, 3000);
+                }, 3000);//loading in 3 seconds
 
             }
 
@@ -64,17 +65,17 @@ public class DoubleLoadingActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         int start = list.size() + 1;
-                        for (int i = start; i <= start+10; i++) {
+                        for (int i = start; i <= start + 10; i++) {
                             list.add("New data on bottom " + i);
                         }
+
                         adapter.notifyDataSetChanged();
                     }
-                }, 3000);
+                }, 3000); //loading in 3 seconds
             }
         });
         recyclerView.setAdapter(adapter);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
