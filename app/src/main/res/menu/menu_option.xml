@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_delete_header"
+        sothree:showAsAction="never"
+        android:title="Delete Header" />
+    <item
+        android:id="@+id/action_delete_footer"
+        sothree:showAsAction="never"
+        android:title="Delete Footer" />
+
+    <item
+        android:id="@+id/action_disable_loading"
+        sothree:showAsAction="never"
+        android:visible="false"
+        android:title="Disable Loading" />
+</menu>
